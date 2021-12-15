@@ -1,0 +1,56 @@
+.spinner-border {
+    animation: none;
+}
+
+.spinner-border-animation {
+    -webkit-animation: .75s linear infinite spinner-border;
+    animation: .75s linear infinite spinner-border;
+}
+
+.custom-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+}
+
+.custom-circle-animation {
+    -webkit-animation: 2s linear infinite custom-circle;
+    animation: 2s linear infinite custom-circle;
+}
+
+.loading-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    display: inline-block;
+    position: relative;
+}
+
+.loading-circle-animation {
+    -webkit-animation: 1s linear infinite loading-circle;
+    animation: 1s linear infinite loading-circle;
+}
+
+@keyframes custom-circle {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes loading-circle {
+    0% {
+        top: 0px;
+    }
+    50% {
+        top: 50px;
+    }
+    100% {
+        top: 0px;
+    }
+}
