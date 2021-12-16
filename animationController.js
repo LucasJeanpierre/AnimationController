@@ -2,14 +2,20 @@ const AnimationController = {
     animationInterval: Array(),
     animationTimeOut: Array(Array()),
     isAnimationLooping: Array(),
+    isAnimationRunning: Array(),
 
-    startAnimation: function(elementId) {
+    startAnimation: function(elementId, count = 0) {
         element = document.getElementById(elementId);
         if (element != null) {
             var animationClass = element.getAttribute('animationClass');
             if (animationClass != null) {
                 element.classList.add(animationClass)
                 if (element.style.animationPlayState == 'paused') element.style.animationPlayState = 'running';
+                if (parseInt(count) > 0) {
+                    setTimeout(() => {
+                        AnimationController.stopAnimation(elementId)
+                    }, parseFloat(getComputedStyle(element).animationDuration) * 1000 * parseInt(count))
+                }
             } else {
                 console.warn('AnimationController : The element do not have animationClass attribute');
             }
@@ -19,7 +25,6 @@ const AnimationController = {
     },
 
     stopAnimation: function(elementId) {
-        console.log('stop animation : ' + elementId)
         element = document.getElementById(elementId);
         if (element != null) {
             var animationClass = element.getAttribute('animationClass');
@@ -36,6 +41,52 @@ const AnimationController = {
 
     pauseAnimation: function(elementId) {
         element = document.getElementById(elementId);
+        if (element != null) {
+            var animationClass = element.getAttribute('animationClass');
+            if (animationClass != null) {
+                element.style.animationPlayState = 'paused';
+            } else {
+                console.warn('AnimationController : The element do not have animationClass attribute');
+            }
+        } else {
+            console.warn('AnimationController : No element found');
+        }
+    },
+
+    startAnimationByElement: function(element, count = 0) {
+        if (element != null) {
+            var animationClass = element.getAttribute('animationClass');
+            if (animationClass != null) {
+                element.classList.add(animationClass)
+                if (element.style.animationPlayState == 'paused') element.style.animationPlayState = 'running';
+                if (parseInt(count) > 0) {
+                    setTimeout(() => {
+                        AnimationController.stopAnimationByElement(element)
+                    }, parseFloat(getComputedStyle(element).animationDuration) * 1000 * parseInt(count))
+                }
+            } else {
+                console.warn('AnimationController : The element do not have animationClass attribute');
+            }
+        } else {
+            console.warn('AnimationController : No element found');
+        }
+    },
+
+    stopAnimationByElement: function(element) {
+        if (element != null) {
+            var animationClass = element.getAttribute('animationClass');
+            if (animationClass != null) {
+                if (element.style.animationPlayState == 'running') element.style.animationPlayState = 'paused';
+                element.classList.remove(animationClass)
+            } else {
+                console.warn('AnimationController : The element do not have animationClass attribute');
+            }
+        } else {
+            console.warn('AnimationController : No element found');
+        }
+    },
+
+    pauseAnimationByElement: function(element) {
         if (element != null) {
             var animationClass = element.getAttribute('animationClass');
             if (animationClass != null) {
@@ -78,14 +129,20 @@ const AnimationController = {
     },
 
     startGlobalAnimation: function(globalAnimationName, elementDelay) {
-        this.animationTimeOut[globalAnimationName] = Array();
-        document.querySelectorAll('[globalAnimationName="' + globalAnimationName + '"]').forEach(element => {
-            if (this.animationTimeOut[globalAnimationName][element.getAttribute('globalAnimationOrder')] != null) clearTimeout(this.animationTimeOut[globalAnimationName][element.getAttribute('globalAnimationOrder')]);
-            this.animationTimeOut[globalAnimationName][element.getAttribute('globalAnimationOrder')] = setTimeout(() => {
-                this.startElementOfGlobalAnimation(element);
-            }, parseInt(element.getAttribute('globalAnimationOrder')) * elementDelay * 1000);
+        if ((this.isAnimationRunning[globalAnimationName] == false) || (this.isAnimationRunning[globalAnimationName] == undefined)) {
+            this.isAnimationRunning[globalAnimationName] = true;
+            this.animationTimeOut[globalAnimationName] = Array();
+            document.querySelectorAll('[globalAnimationName="' + globalAnimationName + '"]').forEach(element => {
+                if (this.animationTimeOut[globalAnimationName][element.getAttribute('globalAnimationOrder')] != null) clearTimeout(this.animationTimeOut[globalAnimationName][element.getAttribute('globalAnimationOrder')]);
+                this.animationTimeOut[globalAnimationName][element.getAttribute('globalAnimationOrder')] = setTimeout(() => {
+                    this.startElementOfGlobalAnimation(element);
+                    this.isAnimationRunning[globalAnimationName] = false;
+                }, parseInt(element.getAttribute('globalAnimationOrder')) * elementDelay * 1000);
 
-        })
+            })
+        } else {
+            console.warn('AnimationController : The animation is aleady running');
+        }
     },
 
     /**
@@ -119,6 +176,15 @@ const AnimationController = {
     endGlobalAnimationLoop: function(globalAnimationName) {
         clearInterval(AnimationController.animationInterval[globalAnimationName]);
         this.isAnimationLooping[globalAnimationName] = false;
+    },
+
+
+    init: function() {
+        document.querySelectorAll("[animationClass]").forEach(element => {
+            element.startAnimation = function(count = 0) { AnimationController.startAnimationByElement(element, count) };
+            element.stopAnimation = function() { AnimationController.stopAnimationByElement(element) };
+            element.pauseAnimation = function() { AnimationController.pauseAnimationByElement(element) };
+        })
     }
 
 
