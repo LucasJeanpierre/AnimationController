@@ -13,7 +13,7 @@ const AnimationController = {
                 if (element.style.animationPlayState == 'paused') element.style.animationPlayState = 'running';
                 if (parseInt(count) > 0) {
                     setTimeout(() => {
-                        AnimationController.stopAnimation(elementId)
+                        AnimationController.pauseAnimation(elementId)
                     }, parseFloat(getComputedStyle(element).animationDuration) * 1000 * parseInt(count))
                 }
             } else {
@@ -61,7 +61,7 @@ const AnimationController = {
                 if (element.style.animationPlayState == 'paused') element.style.animationPlayState = 'running';
                 if (parseInt(count) > 0) {
                     setTimeout(() => {
-                        AnimationController.stopAnimationByElement(element)
+                        AnimationController.pauseAnimationByElement(element)
                     }, parseFloat(getComputedStyle(element).animationDuration) * 1000 * parseInt(count))
                 }
             } else {

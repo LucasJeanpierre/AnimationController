@@ -31,6 +31,19 @@
     animation: 1s linear infinite loading-circle;
 }
 
+.loading-circle-2 {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    display: inline-block;
+    position: relative;
+}
+
+.loading-circle-2-animation {
+    -webkit-animation: 0.4s linear infinite loading-circle-2;
+    animation: 0.4s linear infinite loading-circle-2;
+}
+
 @keyframes custom-circle {
     0% {
         transform: scale(1);
@@ -51,6 +64,24 @@
         top: 50px;
     }
     100% {
+        top: 0px;
+    }
+}
+
+@keyframes loading-circle-2 {
+    0% {
+        opacity: 1;
+        top: 0px;
+    }
+    25% {
+        top: -10px
+    }
+    50% {
+        opacity: 0.5;
+        top: 10px;
+    }
+    100% {
+        opacity: 1;
         top: 0px;
     }
 }
